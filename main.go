@@ -1,15 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo"
 )
 
 type User struct {
-	Name  string `jsonL:"name`
-	Email string `json:"email`
+	Name  string `json:"name" validate:"required"`
+	Email string `json:"email" validate:"required,email"`
 }
 
 func getUser(c echo.Context) error {
@@ -38,11 +37,14 @@ func main() {
 	e.GET("/show", show)
 	e.POST("/save", save)
 	e.POST("/users", func(c echo.Context) (err error) {
-		fmt.Println(err)
 		u := new(User)
 		if err = c.Bind(u); err != nil {
 			return
 		}
+		// u := &User{
+		// 	Name:  "xx",
+		// 	Email: "email",
+		// }
 		return c.JSON(http.StatusCreated, u)
 	})
 	e.Logger.Fatal(e.Start(":1323"))
